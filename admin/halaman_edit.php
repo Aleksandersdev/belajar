@@ -1,11 +1,28 @@
 <?php
 // Panggil Penjaga Keamanan
-// PERBAIKAN: Gunakan __DIR__ untuk path absolut
 require_once __DIR__ . '/auth_check.php';
+
+/**
+ * Mengambil semua kategori dari database dan mengaturnya dalam struktur hierarki (pohon).
+ * (Fungsi yang sama seperti di halaman_tambah.php)
+ */
+function getHierarchicalCategories(PDO $pdo, int $parentId = 0, int $level = 0): array {
+    $categories = [];
+    $stmt = $pdo->prepare("SELECT id, name FROM categories WHERE parent_id = ? ORDER BY name ASC");
+    $stmt->execute([$parentId]);
+    
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $row['level'] = $level;
+        $categories[] = $row;
+        $children = getHierarchicalCategories($pdo, $row['id'], $level + 1);
+        $categories = array_merge($categories, $children);
+    }
+    return $categories;
+}
 
 // Pastikan ID ada di URL
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-    header('Location: ../halaman'); // Arahkan ke URL bersih
+    header('Location: ../halaman'); 
     exit;
 }
 $halaman_id = $_GET['id'];
@@ -17,15 +34,14 @@ $halaman = $stmt->fetch();
 
 if (!$halaman) {
     $_SESSION['pesan_error'] = 'Halaman tidak ditemukan.';
-    header('Location: ../halaman'); // Arahkan ke URL bersih
+    header('Location: ../halaman'); 
     exit;
 }
 
-// Ambil daftar kategori untuk dropdown
-$kategori_list = $pdo->query("SELECT * FROM categories ORDER BY name ASC")->fetchAll();
+// Ambil daftar kategori secara hierarkis
+$hierarchical_categories = getHierarchicalCategories($pdo);
 
 // Muat header
-// Path ini sudah benar karena sudah pakai __DIR__
 require_once __DIR__ . '/../partials/header.php';
 ?>
 
@@ -59,9 +75,13 @@ require_once __DIR__ . '/../partials/header.php';
                         <select id="category_id" name="category_id" required
                                 class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <option value="">-- Pilih Kategori --</option>
-                            <?php foreach ($kategori_list as $kategori): ?>
-                                <option value="<?php echo $kategori['id']; ?>" <?php echo ($kategori['id'] == $halaman['category_id']) ? 'selected' : ''; ?>>
-                                    <?php echo htmlspecialchars($kategori['name'], ENT_QUOTES, 'UTF-8'); ?>
+                             <?php foreach ($hierarchical_categories as $cat): ?>
+                                <option value="<?php echo $cat['id']; ?>" 
+                                        <?php echo ($cat['id'] == $halaman['category_id']) ? 'selected' : ''; ?>>
+                                    <?php 
+                                    echo str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $cat['level']); 
+                                    echo htmlspecialchars($cat['name'], ENT_QUOTES, 'UTF-8'); 
+                                    ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>
@@ -70,7 +90,7 @@ require_once __DIR__ . '/../partials/header.php';
                     <div class="mb-6">
                         <label for="content" class="block text-sm font-medium text-slate-700 mb-2">Konten</label>
                         <textarea id="content" name="content" rows="20" 
-                                  class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"><?php echo htmlspecialchars($halaman['content']); // Gunakan htmlspecialchars untuk textarea ?></textarea>
+                                  class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"><?php echo htmlspecialchars($halaman['content']); ?></textarea>
                     </div>
 
                     <div class="mb-4">
@@ -103,6 +123,5 @@ require_once __DIR__ . '/../partials/header.php';
 </main>
 
 <?php 
-// Path ini sudah benar karena sudah pakai __DIR__
 require_once __DIR__ . '/../partials/footer.php'; 
 ?>

@@ -1,6 +1,13 @@
 <?php
 // Panggil Penjaga Keamanan
-require_once 'auth_check.php';
+// PERBAIKAN: Gunakan __DIR__
+require_once __DIR__ . '/auth_check.php';
+
+// --- Ambil SEMUA kategori untuk dropdown Induk ---
+$stmt_all_cats = $pdo->prepare("SELECT id, name FROM categories ORDER BY name ASC");
+$stmt_all_cats->execute();
+$all_categories = $stmt_all_cats->fetchAll();
+// --- Akhir ---
 
 // (CREATE) Proses penambahan Kategori
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tambah_kategori'])) {
@@ -10,17 +17,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tambah_kategori'])) {
     }
     
     $kategori_nama = trim($_POST['kategori_nama']);
+    // Ambil parent_id dari form (default 0 jika tidak dipilih/kosong)
+    $parent_id = isset($_POST['parent_id']) ? (int)$_POST['parent_id'] : 0;
+    
     if (!empty($kategori_nama)) {
         try {
-            $sql = "INSERT INTO categories (name) VALUES (?)";
+            // PERBAIKAN: Tambahkan parent_id ke query INSERT
+            $sql = "INSERT INTO categories (name, parent_id) VALUES (?, ?)";
             $stmt = $pdo->prepare($sql);
-            $stmt->execute([$kategori_nama]);
+            $stmt->execute([$kategori_nama, $parent_id]);
             $_SESSION['pesan_sukses'] = 'Kategori berhasil ditambahkan.';
         } catch (PDOException $e) {
             $_SESSION['pesan_error'] = 'Gagal menambahkan kategori: ' . $e->getMessage();
         }
     }
-    header('Location: kategori.php');
+    header('Location: kategori'); // Arahkan ke URL bersih
     exit;
 }
 
@@ -33,6 +44,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['hapus_kategori'])) {
     
     $kategori_id = $_POST['kategori_id'];
     try {
+        // PERINGATAN: Menghapus kategori induk bisa membuat anak-anaknya "yatim".
+        // Untuk sistem yang lebih canggih, kita perlu logika tambahan di sini
+        // (misal: pindahkan anak ke root, atau cegah penghapusan induk).
+        // Untuk saat ini, kita biarkan bisa dihapus.
         $sql = "DELETE FROM categories WHERE id = ?";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([$kategori_id]);
@@ -40,14 +55,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['hapus_kategori'])) {
     } catch (PDOException $e) {
         $_SESSION['pesan_error'] = 'Gagal menghapus kategori: ' . $e->getMessage();
     }
-    header('Location: kategori.php');
+    header('Location: kategori'); // Arahkan ke URL bersih
     exit;
 }
 
-// (READ) Ambil semua kategori dari DB
+// (READ) Ambil semua kategori dari DB (Kita akan buat ini lebih canggih nanti)
+// Untuk sekarang, kita tampilkan semua tanpa hierarki.
 $kategori_list = $pdo->query("SELECT * FROM categories ORDER BY name ASC")->fetchAll();
 
 // Muat header
+// PERBAIKAN: Gunakan __DIR__
 require_once __DIR__ . '/../partials/header.php';
 ?>
 
@@ -72,9 +89,24 @@ require_once __DIR__ . '/../partials/header.php';
 
                 <form action="kategori" method="POST">
                     <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
+                    
                     <div class="mb-4">
                         <label for="kategori_nama" class="block text-sm font-medium text-slate-700 mb-2">Nama Kategori</label>
                         <input type="text" id="kategori_nama" name="kategori_nama" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="parent_id" class="block text-sm font-medium text-slate-700 mb-2">Induk Kategori (Opsional)</label>
+                        <select id="parent_id" name="parent_id"
+                                class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="0">-- Tidak Ada Induk (Jadikan Induk Utama) --</option>
+                            <?php foreach ($all_categories as $cat): ?>
+                                <option value="<?php echo $cat['id']; ?>">
+                                    <?php echo htmlspecialchars($cat['name']); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <p class="text-xs text-slate-500 mt-1">Pilih kategori induk jika ini adalah sub-kategori.</p>
                     </div>
                     <button type="submit" name="tambah_kategori" class="cta-gradient text-white font-semibold px-6 py-2 rounded-lg shadow-md">
                         Tambah
@@ -102,11 +134,11 @@ require_once __DIR__ . '/../partials/header.php';
                                 <tr>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">
                                         <?php echo htmlspecialchars($kategori['name'], ENT_QUOTES, 'UTF-8'); ?>
-                                    </td>
+                                        </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <a href="kategori_edit.php?id=<?php echo $kategori['id']; ?>" class="text-indigo-600 hover:text-indigo-900 mr-4">Edit</a>
+                                        <a href="kategori_edit/<?php echo $kategori['id']; ?>" class="text-indigo-600 hover:text-indigo-900 mr-4">Edit</a>
                                         
-                                        <form action="kategori.php" method="POST" class="inline-block" onsubmit="return confirm('Yakin ingin menghapus kategori ini? Semua halaman di dalamnya juga akan terhapus.');">
+                                        <form action="kategori" method="POST" class="inline-block" onsubmit="return confirm('Yakin ingin menghapus kategori ini?');">
                                             <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
                                             <input type="hidden" name="kategori_id" value="<?php echo $kategori['id']; ?>">
                                             <button type="submit" name="hapus_kategori" class="text-red-600 hover:text-red-900">Hapus</button>
@@ -123,4 +155,7 @@ require_once __DIR__ . '/../partials/header.php';
     </section>
 </main>
 
-<?php require_once __DIR__ . '/../partials/footer.php'; ?>
+<?php 
+// PERBAIKAN: Gunakan __DIR__
+require_once __DIR__ . '/../partials/footer.php'; 
+?>

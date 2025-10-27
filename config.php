@@ -42,4 +42,55 @@ ini_set('log_errors', 1);
 // ini_set('error_log', '/path/ke/php-error.log'); // Tentukan path log error
 error_reporting(E_ALL);
 
+// ================================================
+// FUNGSI BARU UNTUK HIERARKI KATEGORI
+// ================================================
+
+/**
+ * Mengambil semua kategori dan mengaturnya dalam struktur hierarki (pohon).
+ * Digunakan untuk menampilkan sidebar/dropdown.
+ *
+ * @param PDO $pdo Objek koneksi PDO.
+ * @param int $parentId ID dari induk kategori (default 0 untuk root).
+ * @param int $level Tingkat kedalaman (untuk indentasi).
+ * @return array Array kategori hierarkis.
+ */
+function getHierarchicalCategories(PDO $pdo, int $parentId = 0, int $level = 0): array {
+    $categories = [];
+    $stmt = $pdo->prepare("SELECT id, name FROM categories WHERE parent_id = ? ORDER BY name ASC");
+    $stmt->execute([$parentId]);
+    
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $row['level'] = $level;
+        $categories[] = $row;
+        $children = getHierarchicalCategories($pdo, $row['id'], $level + 1);
+        $categories = array_merge($categories, $children);
+    }
+    return $categories;
+}
+
+/**
+ * Mengambil ID kategori induk beserta semua ID keturunannya (anak, cucu, dst.).
+ * Digunakan untuk query artikel saat kategori induk dipilih.
+ *
+ * @param PDO $pdo Objek koneksi PDO.
+ * @param int $categoryId ID kategori induk.
+ * @return array Array berisi ID induk dan semua keturunannya.
+ */
+function getCategoryDescendants(PDO $pdo, int $categoryId): array {
+    $ids = [$categoryId]; // Mulai dengan ID induk itu sendiri
+    
+    // Ambil anak langsung
+    $stmt = $pdo->prepare("SELECT id FROM categories WHERE parent_id = ?");
+    $stmt->execute([$categoryId]);
+    
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        // Ambil keturunan dari anak ini (rekursif) dan gabungkan
+        $descendantIds = getCategoryDescendants($pdo, $row['id']);
+        $ids = array_merge($ids, $descendantIds);
+    }
+    
+    return array_unique($ids); // Pastikan tidak ada ID duplikat
+}
+
 ?>
