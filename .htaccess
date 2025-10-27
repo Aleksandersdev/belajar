@@ -1,0 +1,51 @@
+# ================================================
+# FILE .HTACCESS LENGKAP & DIPERBAIKI
+# ================================================
+
+# Mencegah server menampilkan daftar file
+Options -Indexes
+
+# Mengaktifkan Mesin Rewrite URL
+RewriteEngine On
+
+# Mengatur direktori dasar proyek
+RewriteBase /
+
+# --- ATURAN 1: Mengarahkan ulang (redirect) dari .php ke URL bersih ---
+RewriteCond %{THE_REQUEST} \s/+(.+?)\.php[\s?] [NC]
+RewriteRule ^ /%1 [R=301,L]
+
+
+# --- ATURAN 3 & 4 (Aturan Spesifik) ---
+# Aturan-aturan ini harus mencantumkan path lengkap
+# dari root folder.
+
+# Aturan untuk root/halaman.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^halaman/([a-zA-Z0-9-]+)/?$ halaman.php?slug=$1 [L,QSA]
+
+# Aturan untuk root/kategori.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^kategori/([0-9]+)/?$ kategori.php?id=$1 [L,QSA]
+
+# ATURAN DIPERBAIKI: Menambahkan 'admin/'
+# Aturan untuk admin/kategori_edit.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^admin/kategori_edit/([0-9]+)/?$ admin/kategori_edit.php?id=$2 [L,QSA]
+
+# ATURAN DIPERBAIKI: Menambahkan 'admin/'
+# Aturan untuk admin/halaman_edit.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^admin/halaman_edit/([0-9]+)/?$ admin/halaman_edit.php?id=$1 [L,QSA]
+
+
+# --- ATURAN 2: Sembunyikan ekstensi .php (Aturan Umum) ---
+# Ini akan menangani /login, /admin/dashboard, /admin/halaman, dll.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.*)$ $1.php [L]
