@@ -34,7 +34,7 @@ RewriteRule ^kategori/([0-9]+)/?$ kategori.php?id=$1 [L,QSA]
 # Aturan untuk admin/kategori_edit.php
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^admin/kategori_edit/([0-9]+)/?$ admin/kategori_edit.php?id=$2 [L,QSA]
+RewriteRule ^admin/kategori_edit/([0-9]+)/?$ admin/kategori_edit.php?id=$1 [L,QSA]
 
 # ATURAN DIPERBAIKI: Menambahkan 'admin/'
 # Aturan untuk admin/halaman_edit.php

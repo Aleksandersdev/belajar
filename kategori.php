@@ -2,24 +2,21 @@
 // Panggil config (gunakan __DIR__)
 require_once __DIR__ . '/config.php';
 
-// --- AMBIL SEMUA KATEGORI (untuk Sidebar) ---
-// Perlu $pdo dari config.php
-$stmt_all_cats = $pdo->prepare("SELECT * FROM categories ORDER BY name ASC");
-$stmt_all_cats->execute();
-$all_categories = $stmt_all_cats->fetchAll();
-
 // --- Ambil Kategori Hierarkis (untuk Sidebar) ---
 // Panggil fungsi dari config.php
-$hierarchical_categories = getHierarchicalCategories($pdo);
+$hierarchical_categories = getHierarchicalCategories($pdo); // Untuk sidebar lama
+
+// --- Bangun Struktur Pohon Kategori (untuk Sidebar BARU) ---
+$categoryTree = buildCategoryTree($pdo); // Untuk sidebar accordion
 
 
 // --- 1. DAPATKAN KATEGORI DARI ID DI URL ---
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     header('Location: /'); exit;
 }
-$category_id = (int)$_GET['id'];
+$category_id = (int)$_GET['id']; // ID Kategori yang sedang dilihat
 
-// Ambil info nama kategori dan parent_id (untuk breadcrumbs)
+// Ambil info nama kategori dan parent_id
 $stmt_cat_info = $pdo->prepare("SELECT name, parent_id FROM categories WHERE id = ?");
 $stmt_cat_info->execute([$category_id]);
 $category_info = $stmt_cat_info->fetch();
@@ -29,21 +26,25 @@ if (!$category_info) {
 $category_name = $category_info['name'];
 
 // --- Fungsi untuk mendapatkan Breadcrumbs ---
-// (Fungsi ini bisa dipindah ke config.php jika dipakai di tempat lain)
-function getBreadcrumbs(PDO $pdo, int $catId): array {
-    $breadcrumbs = [];
-    $currentId = $catId;
-    while ($currentId != 0) {
-        $stmt = $pdo->prepare("SELECT id, name, parent_id FROM categories WHERE id = ?");
-        $stmt->execute([$currentId]);
-        $cat = $stmt->fetch();
-        if (!$cat) break;
-        array_unshift($breadcrumbs, $cat); // Tambahkan ke depan
-        $currentId = $cat['parent_id'];
+// (Fungsi ini ada di config.php atau bisa ditaruh di sini jika belum)
+if (!function_exists('getBreadcrumbs')) {
+    function getBreadcrumbs(PDO $pdo, int $catId): array {
+        $breadcrumbs = [];
+        $currentId = $catId;
+        while ($currentId != 0) {
+            $stmt = $pdo->prepare("SELECT id, name, parent_id FROM categories WHERE id = ?");
+            $stmt->execute([$currentId]);
+            $cat = $stmt->fetch();
+            if (!$cat) break;
+            array_unshift($breadcrumbs, $cat);
+            $currentId = $cat['parent_id'];
+        }
+        return $breadcrumbs;
     }
-    return $breadcrumbs;
 }
 $breadcrumbs = getBreadcrumbs($pdo, $category_id);
+// Dapatkan ID leluhur (untuk logika sidebar)
+$ancestor_ids = array_map(function($crumb) { return $crumb['id']; }, $breadcrumbs);
 // --- Akhir fungsi Breadcrumbs ---
 
 
@@ -57,11 +58,11 @@ $search_term = $_GET['search'] ?? '';
 $current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($current_page - 1) * $limit;
 
-// Siapkan query
+// Siapkan query (Mengambil artikel dari kategori ini DAN keturunannya)
 $base_sql = "FROM pages p LEFT JOIN categories c ON p.category_id = c.id";
 $placeholders = implode(',', array_fill(0, count($category_ids_to_fetch), '?'));
 $where_sql = " WHERE p.category_id IN ($placeholders)";
-$params = $category_ids_to_fetch; // Parameter pertama array ID
+$params = $category_ids_to_fetch;
 
 if (!empty($search_term)) {
     $where_sql .= " AND p.title LIKE ?";
@@ -92,26 +93,31 @@ foreach ($data_params as $param) {
     } elseif (is_string($param)) {
         $type = PDO::PARAM_STR;
     } else {
-        $type = PDO::PARAM_STR; // Default ke string jika ragu
+        // Fallback jika tipe tidak terdeteksi (misal: array parameter IN)
+        // Kita perlu handle array secara berbeda saat execute, bukan bindValue
+         $type = PDO::PARAM_STR; // Default ke string jika ragu
     }
-    $stmt_data->bindValue($param_index++, $param, $type);
+     // Penyesuaian: Jangan bind array langsung, PDO akan handle saat execute
+     if(!is_array($param)){
+       $stmt_data->bindValue($param_index++, $param, $type);
+     }
 }
-
-$stmt_data->execute();
+// Eksekusi ulang dengan parameter asli yang mungkin berisi array
+$stmt_data->execute($data_params); // PDO handle array in IN clause
 $posts = $stmt_data->fetchAll();
 
 
 // 5. Siapkan array desain
 $design_elements = [
     ['color' => 'blue', 'icon' => 'file-text'],
-    ['color' => 'purple', 'icon' => 'file-text'],
-    ['color' => 'teal', 'icon' => 'file-text'],
-    ['color' => 'rose', 'icon' => 'file-text'],
-    ['color' => 'amber', 'icon' => 'file-text'],
-    ['color' => 'sky', 'icon' => 'file-text'],
-    ['color' => 'indigo', 'icon' => 'file-text'],
-    ['color' => 'lime', 'icon' => 'file-text'],
-    ['color' => 'orange', 'icon' => 'file-text']
+    ['color' => 'purple', 'icon' => 'book-open'],
+    ['color' => 'teal', 'icon' => 'clipboard-check'],
+    ['color' => 'rose', 'icon' => 'award'],
+    ['color' => 'amber', 'icon' => 'lightbulb'],
+    ['color' => 'sky', 'icon' => 'pen-tool'],
+    ['color' => 'indigo', 'icon' => 'target'],
+    ['color' => 'lime', 'icon' => 'feather'],
+    ['color' => 'orange', 'icon' => 'compass']
 ];
 
 // 6. Siapkan parameter URL untuk pagination
@@ -147,30 +153,25 @@ include __DIR__ . '/partials/header.php';
                         </div>
 
                         <div>
-                            <h3 class="text-xl font-bold text-slate-800 mb-4">Filter Kategori</h3>
-                            <div class="rounded-lg max-h-[70vh] overflow-y-auto border border-slate-200 shadow-sm bg-white">
-                                <ul class="space-y-1 p-2">
+                            <h3 class="text-xl font-bold text-slate-800 mb-4">Kategori</h3>
+                            <div class="rounded-lg max-h-[70vh] overflow-y-auto border border-slate-200 shadow-sm bg-white p-2">
+                                <ul class="space-y-1">
                                     <li>
                                         <a href="/" class="block w-full px-4 py-3 rounded-lg text-sm font-medium transition text-slate-600 hover:bg-slate-100 hover:text-slate-900">
                                             Semua Kategori
                                         </a>
                                     </li>
-
-                                    <?php foreach ($hierarchical_categories as $cat): ?>
-                                        <?php $isActive = ($cat['id'] == $category_id); ?>
-                                        <li>
-                                            <a href="/kategori/<?php echo $cat['id']; ?>"
-                                               class="block w-full px-4 py-3 rounded-lg text-sm font-semibold transition
-                                                      <?php echo $isActive ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'; ?>"
-                                               style="padding-left: <?php echo 1 + ($cat['level'] * 1.5); ?>rem;"> <?php echo htmlspecialchars($cat['name']); ?>
-                                            </a>
-                                        </li>
-                                    <?php endforeach; ?>
                                 </ul>
+                                <?php
+                                // Panggil fungsi render sidebar dari config.php
+                                // Kirim ID kategori aktif ($category_id) dan ID leluhurnya ($ancestor_ids)
+                                echo renderCategorySidebar($categoryTree, $category_id, $ancestor_ids);
+                                ?>
                             </div>
                         </div>
 
                     </div> </aside>
+
 
                 <div class="w-full md:w-3/4 order-1 md:order-2">
 

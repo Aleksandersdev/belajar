@@ -107,6 +107,61 @@ defined('APP_RUNNING') or die('Access denied');
             }
         });
     </script>
-    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Targetkan link di dalam sidebar (lebih spesifik)
+            const categoryLinks = document.querySelectorAll('aside ul a[data-category-id]'); // Selector diperbaiki
+
+            categoryLinks.forEach(link => {
+                const categoryId = link.dataset.categoryId;
+                const hasChildren = link.dataset.hasChildren === 'true';
+                const icon = link.querySelector('i[data-lucide="chevron-down"]');
+
+                // Cari sub-menu (ul) SETELAH link ini
+                const subMenu = link.nextElementSibling;
+
+                // Cek apakah link ini aktif atau leluhur (berdasarkan kelas dari PHP)
+                const isActive = link.classList.contains('bg-blue-100'); // Kelas untuk aktif
+                const isAncestor = link.classList.contains('font-medium') && !isActive; // Kelas untuk leluhur (bukan yg aktif)
+
+                // Jika link adalah leluhur ATAU aktif DAN punya anak, buka sub-menunya
+                if ((isActive || isAncestor) && hasChildren && subMenu && subMenu.tagName === 'UL') { // Pastikan nextSibling adalah UL
+                    subMenu.classList.remove('hidden'); // Tampilkan sub-menu
+                    if (icon) icon.classList.add('rotate-180'); // Putar panah
+                }
+
+                // Tambahkan event listener HANYA jika punya anak
+                if (hasChildren) {
+                    link.addEventListener('click', function (event) {
+                        // Mencegah navigasi hanya jika subMenu ditemukan dan itu adalah UL
+                        if (subMenu && subMenu.tagName === 'UL') {
+                             event.preventDefault(); // Hentikan pindah halaman
+                             subMenu.classList.toggle('hidden'); // Buka/tutup sub-menu
+                             if (icon) icon.classList.toggle('rotate-180'); // Putar panah
+
+                             // Tutup sub-menu lain di level yang sama (opsional)
+                             // const parentUl = link.closest('ul');
+                             // if (parentUl) {
+                             //     parentUl.querySelectorAll(':scope > li > ul').forEach(otherSubMenu => {
+                             //         if (otherSubMenu !== subMenu) {
+                             //            otherSubMenu.classList.add('hidden');
+                             //            const otherIcon = otherSubMenu.previousElementSibling.querySelector('i[data-lucide="chevron-down"]');
+                             //            if (otherIcon) otherIcon.classList.remove('rotate-180');
+                             //         }
+                             //     });
+                             // }
+                        }
+                        // Jika tidak ada subMenu atau bukan UL, biarkan link berjalan normal
+                    });
+                }
+            });
+
+             // Inisialisasi ulang ikon Lucide jika ada ikon baru
+             if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+             }
+        });
+    </script>    
 </body>
 </html>

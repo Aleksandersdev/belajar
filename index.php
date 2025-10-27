@@ -4,7 +4,8 @@ require_once 'config.php';
 
 // --- Ambil Kategori Hierarkis (untuk Sidebar) ---
 // Kita panggil fungsi dari config.php
-$hierarchical_categories = getHierarchicalCategories($pdo);
+// --- Bangun Struktur Pohon Kategori ---
+$categoryTree = buildCategoryTree($pdo);
 
 // --- LOGIKA PENCARIAN & PAGINATION (Untuk SEMUA Artikel) ---
 
@@ -95,25 +96,20 @@ include 'partials/header.php';
 
                         <div>
                             <h3 class="text-xl font-bold text-slate-800 mb-4">Filter Kategori</h3>
-                            <div class="rounded-lg max-h-[70vh] overflow-y-auto border border-slate-200 shadow-sm bg-white">
-                                <ul class="space-y-1 p-2">
-                                    <li>
-                                        <a href="/"
-                                           class="block w-full px-4 py-3 rounded-lg text-sm font-semibold transition bg-blue-100 text-blue-700">
-                                            Semua Kategori
-                                        </a>
-                                    </li>
-
-                                    <?php foreach ($hierarchical_categories as $cat): ?>
-                                        <li>
-                                            <a href="/kategori/<?php echo $cat['id']; ?>"
-                                               class="block w-full px-4 py-3 rounded-lg text-sm font-medium transition text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-                                               style="padding-left: <?php echo 1 + ($cat['level'] * 1.5); ?>rem;"> <?php echo htmlspecialchars($cat['name']); ?>
-                                            </a>
-                                        </li>
-                                    <?php endforeach; ?>
-                                </ul>
-                            </div>
+                            <div class="rounded-lg max-h-[70vh] overflow-y-auto border border-slate-200 shadow-sm bg-white p-2">
+    <ul class="space-y-1">
+        <li>
+            <a href="/" class="block w-full px-4 py-3 rounded-lg text-sm font-semibold transition bg-blue-100 text-blue-700">
+                Semua Kategori
+            </a>
+        </li>
+    </ul>
+    <?php
+    // Panggil fungsi render sidebar
+    // Di beranda, tidak ada kategori aktif (ID 0) dan tidak ada leluhur
+    echo renderCategorySidebar($categoryTree, 0, []);
+    ?>
+</div>
                         </div>
 
                     </div> </aside>

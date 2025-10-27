@@ -93,4 +93,84 @@ function getCategoryDescendants(PDO $pdo, int $categoryId): array {
     return array_unique($ids); // Pastikan tidak ada ID duplikat
 }
 
-?>
+// ... (fungsi getHierarchicalCategories dan getCategoryDescendants) ...
+
+/**
+ * Membangun struktur pohon (nested array) dari kategori.
+ * Setiap elemen array akan memiliki 'id', 'name', dan 'children' (array anak).
+ *
+ * @param PDO $pdo Objek koneksi PDO.
+ * @param int $parentId ID dari induk kategori (default 0 untuk root).
+ * @return array Struktur pohon kategori.
+ */
+function buildCategoryTree(PDO $pdo, int $parentId = 0): array {
+    $tree = [];
+    $stmt = $pdo->prepare("SELECT id, name FROM categories WHERE parent_id = ? ORDER BY name ASC");
+    $stmt->execute([$parentId]);
+
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        // Ambil anak-anak dari kategori ini (rekursif)
+        $children = buildCategoryTree($pdo, $row['id']);
+        if (!empty($children)) {
+            $row['children'] = $children; // Tambahkan array 'children' jika ada
+        } else {
+             $row['children'] = []; // Tambahkan array kosong jika tidak punya anak
+        }
+        $tree[] = $row; // Tambahkan node ke pohon
+    }
+
+    return $tree;
+}
+
+// ... (fungsi buildCategoryTree) ...
+
+/**
+ * Mencetak (render) HTML untuk sidebar kategori accordion.
+ *
+ * @param array $categories Pohon kategori dari buildCategoryTree().
+ * @param int $activeCategoryId ID kategori yang sedang aktif.
+ * @param array $ancestorIds Array ID leluhur dari kategori aktif.
+ * @param int $level Tingkat kedalaman saat ini.
+ * @return string HTML untuk sidebar.
+ */
+function renderCategorySidebar(array $categories, int $activeCategoryId = 0, array $ancestorIds = [], int $level = 0): string {
+    $html = '<ul class="space-y-1 ' . ($level > 0 ? 'ml-4 pl-4 border-l border-slate-200 mt-1 hidden' : '') . '" ' . ($level > 0 ? 'data-parent-id="' . $parentId . '"' : '') . '>'; // Sub-menu disembunyikan awalnya ('hidden')
+
+    foreach ($categories as $cat) {
+        $isActive = ($cat['id'] == $activeCategoryId);
+        $isAncestor = in_array($cat['id'], $ancestorIds);
+        $hasChildren = !empty($cat['children']);
+        
+        // Tentukan kelas CSS
+        $linkClasses = 'block w-full px-4 py-2.5 rounded-lg text-sm transition flex items-center justify-between ';
+        if ($isActive) {
+            $linkClasses .= 'bg-blue-100 text-blue-700 font-semibold';
+        } elseif ($isAncestor) {
+             // Beri sedikit penekanan pada leluhur yang terbuka
+             $linkClasses .= 'text-slate-700 font-medium hover:bg-slate-100';
+        } else {
+            $linkClasses .= 'text-slate-600 hover:bg-slate-100 hover:text-slate-900';
+        }
+
+        $html .= '<li>';
+        $html .= '<a href="/kategori/' . $cat['id'] . '" class="' . $linkClasses . '" data-category-id="' . $cat['id'] . '" ' . ($hasChildren ? 'data-has-children="true"' : '') . '>';
+        $html .= '<span>' . htmlspecialchars($cat['name']) . '</span>';
+        // Tambahkan ikon panah jika punya anak
+        if ($hasChildren) {
+             $html .= '<i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform duration-200"></i>';
+        }
+        $html .= '</a>';
+
+        // Jika punya anak, panggil fungsi ini lagi (rekursif)
+        if ($hasChildren) {
+            // Kita teruskan $activeCategoryId dan $ancestorIds ke level berikutnya
+            $html .= renderCategorySidebar($cat['children'], $activeCategoryId, $ancestorIds, $level + 1, $cat['id']);
+        }
+        $html .= '</li>';
+    }
+    $html .= '</ul>';
+    return $html;
+}
+
+
+?> 
