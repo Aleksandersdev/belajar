@@ -73,6 +73,14 @@ require_once __DIR__ . '/../partials/header.php';
                                       file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
                     </div>
 
+                    <div class="mb-4">
+    <label for="access_code" class="block text-sm font-medium text-slate-700 mb-2">Kode Akses Halaman (Opsional)</label>
+    <input type="text" id="access_code" name="access_code"
+           class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+           placeholder="Biarkan kosong jika publik">
+    <p class="text-xs text-slate-500 mt-1">Hanya pengguna dengan kode ini yang bisa akses halaman ini.</p>
+</div>
+
                     <div class="flex items-center justify-between">
                         <button type="submit" name="tambah_halaman" class="cta-gradient text-white font-semibold px-6 py-2 rounded-lg shadow-md">
                             Terbitkan

@@ -12,7 +12,7 @@ $all_categories = $pdo->query("SELECT * FROM categories ORDER BY name ASC")->fet
 $limit = 10;
 $search_term = $_GET['search'] ?? '';
 $category_filter = $_GET['category'] ?? '';
-$sort_order = $_GET['sort'] ?? 'terbaru';
+$sort_order = $_GET['sort'] ?? 'update_terbaru'; // Default: di-update terbaru
 $current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($current_page - 1) * $limit;
 
@@ -30,8 +30,28 @@ if (!empty($category_filter)) {
     $params[] = (int)$category_filter;
 }
 
-$sort_sql = " ORDER BY p.created_at ";
-$sort_sql .= ($sort_order === 'terlama') ? "ASC" : "DESC";
+$sort_sql = " ORDER BY ";
+switch ($sort_order) {
+    case 'update_terlama': // Opsi baru
+        $sort_sql .= "p.updated_at ASC";
+        break;
+    case 'terbaru': // Berdasarkan tanggal dibuat
+        $sort_sql .= "p.created_at DESC";
+        break;
+    case 'terlama': // Berdasarkan tanggal dibuat
+        $sort_sql .= "p.created_at ASC";
+        break;
+    case 'nama_asc':
+        $sort_sql .= "p.title ASC";
+        break;
+    case 'nama_desc':
+        $sort_sql .= "p.title DESC";
+        break;
+    case 'update_terbaru': // Opsi baru & Default
+    default:
+        $sort_sql .= "p.updated_at DESC";
+        break;
+}
 
 // 4. Query COUNT
 $stmt_count = $pdo->prepare("SELECT COUNT(p.id) $base_sql $where_sql");
@@ -39,9 +59,9 @@ $stmt_count->execute($params);
 $total_posts = (int)$stmt_count->fetchColumn();
 $total_pages = ceil($total_posts / $limit);
 
-// 5. Query DATA
-$data_sql = "SELECT p.id, p.title, p.slug, p.created_at, c.name AS category_name 
-             $base_sql $where_sql $sort_sql LIMIT ? OFFSET ?";
+// 5. Query untuk MENGAMBIL DATA (sesuai halaman saat ini)
+$data_sql = "SELECT p.id, p.title, p.slug, p.created_at, p.access_code, c.name AS category_name
+             $base_sql $where_sql $sort_sql LIMIT ? OFFSET ?"; // <-- Ditambahkan p.access_code
              
 $data_params = $params;
 $data_params[] = $limit;
@@ -63,7 +83,7 @@ $halaman_list = $stmt_data->fetchAll();
 $query_params = [];
 if (!empty($search_term)) $query_params['search'] = $search_term;
 if (!empty($category_filter)) $query_params['category'] = $category_filter;
-if ($sort_order !== 'terbaru') $query_params['sort'] = $sort_order;
+if ($sort_order !== 'update_terbaru') $query_params['sort'] = $sort_order; // Gunakan default baru
 
 // --- AKHIR LOGIKA ---
 
@@ -119,11 +139,14 @@ require_once __DIR__ . '/../partials/header.php';
                     
                     <div>
                         <label for="sort" class="block text-sm font-medium text-slate-700 mb-1">Urutkan</label>
-                        <select name="sort" id="sort"
-                                class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="terbaru" <?php echo ($sort_order == 'terbaru') ? 'selected' : ''; ?>>Terbaru</option>
-                            <option value="terlama" <?php echo ($sort_order == 'terlama') ? 'selected' : ''; ?>>Terlama</option>
-                        </select>
+                        <select name="sort" id="sort" class="w-full ...">
+    <option value="update_terbaru" <?php echo ($sort_order == 'update_terbaru') ? 'selected' : ''; ?>>Update Terbaru</option>
+    <option value="update_terlama" <?php echo ($sort_order == 'update_terlama') ? 'selected' : ''; ?>>Update Terlama</option>
+    <option value="terbaru" <?php echo ($sort_order == 'terbaru') ? 'selected' : ''; ?>>Dibuat Terbaru</option>
+    <option value="terlama" <?php echo ($sort_order == 'terlama') ? 'selected' : ''; ?>>Dibuat Terlama</option>
+    <option value="nama_asc" <?php echo ($sort_order == 'nama_asc') ? 'selected' : ''; ?>>Judul A-Z</option>
+    <option value="nama_desc" <?php echo ($sort_order == 'nama_desc') ? 'selected' : ''; ?>>Judul Z-A</option>
+</select>
                     </div>
 
                     <div class="flex items-end space-x-2">
@@ -141,11 +164,11 @@ require_once __DIR__ . '/../partials/header.php';
                     <table class="min-w-full divide-y divide-slate-200">
                         <thead class="bg-slate-50">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Judul</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Kategori</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Tanggal</th>
-                                <th class="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">Aksi</th>
-                            </tr>
+        <th class="px-6 py-3 text-left ...">Judul</th>
+        <th class="px-6 py-3 text-left ...">Kategori</th>
+        <th class="px-6 py-3 text-left ...">Tanggal</th>
+        <th class="px-6 py-3 text-left ...">Kode Akses</th> <th class="px-6 py-3 text-right ...">Aksi</th>
+    </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-slate-200">
                             
@@ -169,6 +192,12 @@ require_once __DIR__ . '/../partials/header.php';
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
                                         <?php echo date('d M Y, H:i', strtotime($halaman['created_at'])); ?>
                                     </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+    <?php
+        // Tampilkan kode akses atau '-' jika publik (NULL)
+        echo !empty($halaman['access_code']) ? htmlspecialchars($halaman['access_code']) : '-';
+    ?>
+</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <a href="../halaman/<?php echo $halaman['slug']; ?>" target="_blank" class="text-green-600 hover:text-green-900 mr-4">Lihat</a>
                                         <a href="halaman_edit/<?php echo $halaman['id']; ?>" class="text-indigo-600 hover:text-indigo-900 mr-4">Edit</a>

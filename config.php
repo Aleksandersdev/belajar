@@ -133,38 +133,39 @@ function buildCategoryTree(PDO $pdo, int $parentId = 0): array {
  * @param int $level Tingkat kedalaman saat ini.
  * @return string HTML untuk sidebar.
  */
-function renderCategorySidebar(array $categories, int $activeCategoryId = 0, array $ancestorIds = [], int $level = 0): string {
-    $html = '<ul class="space-y-1 ' . ($level > 0 ? 'ml-4 pl-4 border-l border-slate-200 mt-1 hidden' : '') . '" ' . ($level > 0 ? 'data-parent-id="' . $parentId . '"' : '') . '>'; // Sub-menu disembunyikan awalnya ('hidden')
+function renderCategorySidebar(array $categories, int $activeCategoryId = 0, array $ancestorIds = [], int $level = 0, int $parentId = 0): string { // <-- DITAMBAHKAN $parentId = 0
+    // PERBAIKAN: Hanya tambahkan data-parent-id jika level > 0
+    $ulAttributes = ($level > 0) ? ' data-parent-id="' . $parentId . '"' : '';
+    $html = '<ul class="space-y-1 ' . ($level > 0 ? 'ml-4 pl-4 border-l border-slate-200 mt-1 hidden' : '') . '"' . $ulAttributes . '>'; // <-- DIPERBARUI
 
     foreach ($categories as $cat) {
         $isActive = ($cat['id'] == $activeCategoryId);
         $isAncestor = in_array($cat['id'], $ancestorIds);
         $hasChildren = !empty($cat['children']);
-        
+
         // Tentukan kelas CSS
         $linkClasses = 'block w-full px-4 py-2.5 rounded-lg text-sm transition flex items-center justify-between ';
         if ($isActive) {
             $linkClasses .= 'bg-blue-100 text-blue-700 font-semibold';
         } elseif ($isAncestor) {
-             // Beri sedikit penekanan pada leluhur yang terbuka
              $linkClasses .= 'text-slate-700 font-medium hover:bg-slate-100';
         } else {
             $linkClasses .= 'text-slate-600 hover:bg-slate-100 hover:text-slate-900';
         }
 
         $html .= '<li>';
+        // PERBAIKAN: Gunakan /kategori/ bukan kategori/
         $html .= '<a href="/kategori/' . $cat['id'] . '" class="' . $linkClasses . '" data-category-id="' . $cat['id'] . '" ' . ($hasChildren ? 'data-has-children="true"' : '') . '>';
         $html .= '<span>' . htmlspecialchars($cat['name']) . '</span>';
-        // Tambahkan ikon panah jika punya anak
         if ($hasChildren) {
-             $html .= '<i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform duration-200"></i>';
+             $html .= '<i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform duration-200 flex-shrink-0"></i>'; // Tambah flex-shrink-0
         }
         $html .= '</a>';
 
         // Jika punya anak, panggil fungsi ini lagi (rekursif)
         if ($hasChildren) {
-            // Kita teruskan $activeCategoryId dan $ancestorIds ke level berikutnya
-            $html .= renderCategorySidebar($cat['children'], $activeCategoryId, $ancestorIds, $level + 1, $cat['id']);
+            // Kita teruskan ID kategori saat ini ($cat['id']) sebagai $parentId untuk level berikutnya
+            $html .= renderCategorySidebar($cat['children'], $activeCategoryId, $ancestorIds, $level + 1, $cat['id']); // <-- Pastikan $cat['id'] dikirim
         }
         $html .= '</li>';
     }

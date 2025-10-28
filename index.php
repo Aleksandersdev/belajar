@@ -10,7 +10,7 @@ $categoryTree = buildCategoryTree($pdo);
 // --- LOGIKA PENCARIAN & PAGINATION (Untuk SEMUA Artikel) ---
 
 // 1. Tentukan variabel
-$limit = 6; // Jumlah postingan per halaman
+$limit = 10; // Jumlah postingan per halaman
 $search_term = $_GET['search'] ?? ''; // Ambil istilah pencarian
 $current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Ambil halaman saat ini
 $offset = ($current_page - 1) * $limit; // Hitung offset
