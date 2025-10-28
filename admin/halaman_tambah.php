@@ -10,19 +10,7 @@ require_once __DIR__ . '/auth_check.php';
  * @param int $level Tingkat kedalaman saat ini (untuk indentasi).
  * @return array Array kategori yang sudah diurutkan secara hierarkis.
  */
-function getHierarchicalCategories(PDO $pdo, int $parentId = 0, int $level = 0): array {
-    $categories = [];
-    $stmt = $pdo->prepare("SELECT id, name FROM categories WHERE parent_id = ? ORDER BY name ASC");
-    $stmt->execute([$parentId]);
-    
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $row['level'] = $level; // Simpan level untuk indentasi
-        $categories[] = $row;
-        $children = getHierarchicalCategories($pdo, $row['id'], $level + 1);
-        $categories = array_merge($categories, $children);
-    }
-    return $categories;
-}
+
 
 // Ambil daftar kategori secara hierarkis
 $hierarchical_categories = getHierarchicalCategories($pdo);
@@ -45,7 +33,7 @@ require_once __DIR__ . '/../partials/header.php';
                     </div>
                 <?php endif; ?>
 
-                <form action="../halaman_proses" method="POST" enctype="multipart/form-data">
+                <form action="/admin/halaman_proses" method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
                     
                     <div class="mb-4">

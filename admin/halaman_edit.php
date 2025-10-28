@@ -6,19 +6,7 @@ require_once __DIR__ . '/auth_check.php';
  * Mengambil semua kategori dari database dan mengaturnya dalam struktur hierarki (pohon).
  * (Fungsi yang sama seperti di halaman_tambah.php)
  */
-function getHierarchicalCategories(PDO $pdo, int $parentId = 0, int $level = 0): array {
-    $categories = [];
-    $stmt = $pdo->prepare("SELECT id, name FROM categories WHERE parent_id = ? ORDER BY name ASC");
-    $stmt->execute([$parentId]);
-    
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $row['level'] = $level;
-        $categories[] = $row;
-        $children = getHierarchicalCategories($pdo, $row['id'], $level + 1);
-        $categories = array_merge($categories, $children);
-    }
-    return $categories;
-}
+
 
 // Pastikan ID ada di URL
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
