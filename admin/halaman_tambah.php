@@ -65,13 +65,15 @@ require_once __DIR__ . '/../partials/header.php';
                                   class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
                     </div>
 
-                    <div class="mb-4">
-                        <label for="icon" class="block text-sm font-medium text-slate-700 mb-2">Upload Ikon (Opsional)</label>
-                        <input type="file" id="icon" name="icon" 
-                               class="w-full px-3 py-2 border border-slate-300 rounded-lg file:mr-4 file:py-2 file:px-4
-                                      file:rounded-full file:border-0 file:text-sm file:font-semibold
-                                      file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                    </div>
+                   <div class="mb-4">
+    <label for="icon_name" class="block text-sm font-medium text-slate-700 mb-2">Nama Ikon Lucide (Opsional)</label>
+    <input type="text" id="icon_name" name="icon_name"
+           class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+           placeholder="Contoh: book-open, file-text, award">
+    <p class="text-xs text-slate-500 mt-1">
+        Lihat nama ikon di <a href="https://lucide.dev/icons/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">lucide.dev/icons/</a>. Kosongkan jika tidak perlu ikon khusus.
+    </p>
+</div>
 
                     <div class="mb-4">
     <label for="access_code" class="block text-sm font-medium text-slate-700 mb-2">Kode Akses Halaman (Opsional)</label>

@@ -11,11 +11,12 @@ defined('APP_RUNNING') or die('Access denied');
                 <p class="text-slate-500 text-sm">Platform terintegrasi untuk pengembangan kompetensi akademik dan profesional.</p>
             </div>
             <div>
-                <h3 class="font-semibold text-slate-900 mb-4">Tautan Cepat</h3>
+                <h3 class="font-semibold text-slate-900 mb-4">Bantuan & Panduan</h3>
                 <ul class="space-y-3">
-                    <li><a href="https://domainanda.com/page/tentang-kami" class="text-slate-500 hover:text-indigo-600 transition-colors">Tentang Kami</a></li>
-                    <li><a href="https://domainanda.com/#layanan" class="text-slate-500 hover:text-indigo-600 transition-colors">Layanan</a></li>
-                    <li><a href="https://domainanda.com/#blog" class="text-slate-500 hover:text-indigo-600 transition-colors">Blog</a></li>
+                    <li><a href="/tentang-kami" class="text-slate-500 hover:text-indigo-600 transition-colors">Tentang Kami</a></li>
+                    <li><a href="/kontak" class="text-slate-500 hover:text-indigo-600 transition-colors">Kontak Kami</a></li>
+                    <li><a href="/kebijakan-privasi" class="text-slate-500 hover:text-indigo-600 transition-colors">Kebijakan Privasi</a></li>
+                    <li><a href="/disclaimer" class="text-slate-500 hover:text-indigo-600 transition-colors">Disclaimer</a></li>
                 </ul>
             </div>
             <div>
@@ -163,5 +164,7 @@ defined('APP_RUNNING') or die('Access denied');
              }
         });
     </script>    
+
+    
 </body>
 </html>

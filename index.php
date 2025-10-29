@@ -36,7 +36,7 @@ $total_pages = ceil($total_posts / $limit);
 // 4. Query untuk MENGAMBIL DATA POSTINGAN (untuk halaman ini)
 $data_query = "SELECT p.title, p.slug, p.icon_path, c.name AS category_name "
             . $base_sql . $where_sql
-            . " ORDER BY p.created_at DESC LIMIT ? OFFSET ?";
+            . " ORDER BY p.updated_at DESC LIMIT ? OFFSET ?"; // <-- Order by updated_at
 
 $stmt_data = $pdo->prepare($data_query);
 $param_index = 1;
@@ -157,13 +157,12 @@ include 'partials/header.php';
                                    data-aos="fade-up"
                                    data-aos-delay="<?php echo ($index % 2) * 100; ?>">
                                     <div class="flex items-center space-x-4">
-                                        <div class="flex-shrink-0 w-16 h-16 rounded-xl flex items-center justify-center overflow-hidden <?php echo !empty($post['icon_path']) ? 'bg-slate-100' : 'bg-' . $color . '-100'; ?>">
-                                            <?php if (!empty($post['icon_path'])): ?>
-                                                <img src="uploads/<?php echo htmlspecialchars($post['icon_path']); ?>" alt="<?php echo htmlspecialchars($post['title']); ?>" class="w-full h-full object-cover">
-                                            <?php else: ?>
-                                                <i data-lucide="<?php echo $default_icon; ?>" class="w-8 h-8 text-<?php echo $color; ?>-600"></i>
-                                            <?php endif; ?>
-                                        </div>
+                                        <div class="flex-shrink-0 w-16 h-16 rounded-xl flex items-center justify-center bg-<?php echo $color; ?>-100"> <?php
+    // Gunakan nama ikon dari DB ($post['icon_path']) jika ada, jika tidak pakai ikon default
+    $icon_to_display = !empty($post['icon_path']) ? htmlspecialchars($post['icon_path']) : $default_icon;
+    ?>
+    <i data-lucide="<?php echo $icon_to_display; ?>" class="w-8 h-8 text-<?php echo $color; ?>-600"></i>
+</div>
                                         <div>
                                             <h3 class="text-lg font-bold text-slate-800 mb-1 group-hover:text-<?php echo $color; ?>-700 transition-colors"><?php echo htmlspecialchars($post['title']); ?></h3>
                                             <?php if (!empty($post['category_name'])): ?>

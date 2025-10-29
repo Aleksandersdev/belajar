@@ -1,6 +1,19 @@
 <?php
 // Mencegah file ini diakses secara langsung dari browser
 defined('APP_RUNNING') or die('Access denied');
+// --- PENGATURAN META TAG DINAMIS ---
+// Nilai default (jika tidak di-set oleh halaman pemanggil)
+$default_description = "Rangkuman Materi Pelajaran Lengkap dan Latihan Soal untuk persiapan ujian Anda."; // Ganti dengan deskripsi default websitemu
+$default_keywords = "Kampus Impian, rangkuman materi, latihan soal, bimbel, try out, UTBK, masuk PTN"; // Ganti dengan kata kunci umum websitemu
+$site_name = "Kampus Impian"; // Nama websitemu
+$current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+
+
+// Gunakan nilai dari halaman pemanggil jika ada, jika tidak pakai default
+$meta_title = isset($page_title) ? htmlspecialchars($page_title) . ' | ' . $site_name : $site_name;
+$meta_description = isset($page_description) ? htmlspecialchars($page_description) : $default_description;
+$meta_keywords = isset($page_keywords) ? htmlspecialchars($page_keywords) : $default_keywords;
+$meta_image = isset($page_image) ? htmlspecialchars($page_image) : $default_image_url; // Gambar spesifik per halaman (opsional)
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -8,7 +21,13 @@ defined('APP_RUNNING') or die('Access denied');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-   <title><?php echo isset($page_title) ? $page_title : 'Beranda'; ?> | Rangkumanmateri.com</title>
+   <title><?php echo isset($page_title) ? $page_title : 'Beranda'; ?> | kampusimpian.com</title>
+   <meta name="description" content="<?php echo $meta_description; ?>">
+    <meta name="keywords" content="<?php echo $meta_keywords; ?>">
+    <meta name="robots" content="index, follow"> <meta name="author" content="@rangkumanmateri_"> <meta property="og:title" content="<?php echo $meta_title; ?>">
+    <meta property="og:description" content="<?php echo $meta_description; ?>">
+    <meta property="og:type" content="website"> <meta property="og:url" content="<?php echo $current_url; ?>">
+    <meta property="og:image" content="<?php echo $meta_image; ?>"> <meta property="og:site_name" content="<?php echo $site_name; ?>">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -43,7 +62,7 @@ defined('APP_RUNNING') or die('Access denied');
 <body class="bg-slate-50"> 
 <header class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
     <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-        <a href="https," class="text-2xl font-bold text-blue-800">
+        <a href="#" class="text-2xl font-bold text-blue-800">
             Rangkuman Materi
         </a>
         <div class="hidden md:flex items-center space-x-8">

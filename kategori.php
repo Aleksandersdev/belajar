@@ -2,6 +2,12 @@
 // Panggil config (gunakan __DIR__)
 require_once __DIR__ . '/config.php';
 
+// --- DEFINISIKAN META TAG SPESIFIK UNTUK HALAMAN INI ---
+$page_title = 'Kategori: ' . $category_name;
+$page_description = 'Temukan semua artikel dan materi dalam kategori ' . htmlspecialchars($category_name) . ' di RangkumanMateri.com.';
+$page_keywords = htmlspecialchars($category_name) . ', rangkuman materi, ' . $category_name;
+// --- AKHIR DEFINISI META ---
+
 // --- Ambil Kategori Hierarkis (untuk Sidebar) ---
 // Panggil fungsi dari config.php
 $hierarchical_categories = getHierarchicalCategories($pdo); // Untuk sidebar lama
@@ -79,7 +85,7 @@ $total_pages = ceil($total_posts / $limit);
 // 4. Query DATA POSTINGAN
 $data_query = "SELECT p.title, p.slug, p.icon_path, c.name AS category_name "
             . $base_sql . $where_sql
-            . " ORDER BY p.created_at DESC LIMIT ? OFFSET ?";
+            . " ORDER BY p.updated_at DESC LIMIT ? OFFSET ?"; // <-- Order by updated_at
 
 $stmt_data = $pdo->prepare($data_query);
 $data_params = $params;

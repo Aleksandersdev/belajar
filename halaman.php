@@ -2,6 +2,12 @@
 // Panggil config
 require_once __DIR__ . '/config.php';
 
+// --- DEFINISIKAN META TAG SPESIFIK UNTUK HALAMAN INI ---
+$page_title = $halaman['title']; // Judul artikel
+// Buat deskripsi singkat (misal: 160 karakter pertama dari konten, hapus HTML)
+
+// --- AKHIR DEFINISI META ---
+
 // Ambil slug dari URL
 if (!isset($_GET['slug'])) {
     header('Location: /'); exit;
@@ -51,26 +57,10 @@ include __DIR__ . '/partials/header.php';
 ?>
 
 <main>
-    <section class="py-20 bg-white">
-        <div class="container mx-auto px-6 max-w-3xl">
+   
 
             <?php if ($has_page_access): ?>
-                <article class="prose lg:prose-xl max-w-none">
-                    <div class="mb-4">
-                        <span class="text-sm font-semibold text-blue-600 uppercase">
-                            <?php echo htmlspecialchars($halaman['category_name'], ENT_QUOTES, 'UTF-8'); ?>
-                        </span>
-                    </div>
-                    <h1><?php echo htmlspecialchars($halaman['title'], ENT_QUOTES, 'UTF-8'); ?></h1>
-                    <p class="text-slate-500 text-sm mb-8">
-                        Dipublikasikan pada: <?php echo date('d F Y', strtotime($halaman['created_at'])); ?>
-                    </p>
-                    <hr class="mb-8">
-                    <div>
-                        <?php echo $halaman['content']; // Tampilkan HTML mentah ?>
-                    </div>
-                </article>
-
+                <?php echo $halaman['content']; // Tampilkan HTML mentah ?>
             <?php else: ?>
                 <div class="bg-white rounded-2xl shadow-lg border border-slate-200 p-8 max-w-md mx-auto" data-aos="fade-up">
                     <h3 class="text-xl font-bold text-slate-800 text-center mb-2">Konten Terbatas</h3>
@@ -106,8 +96,8 @@ include __DIR__ . '/partials/header.php';
                     </p>
                 </div>
             <?php endif; ?>
-            </div>
-    </section>
+       
+ 
 </main>
 
 <?php
