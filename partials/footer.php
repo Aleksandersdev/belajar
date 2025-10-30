@@ -165,6 +165,92 @@ defined('APP_RUNNING') or die('Access denied');
         });
     </script>    
 
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const accordionButtons = document.querySelectorAll('.accordion-button');
+
+        accordionButtons.forEach(button => {
+            // Cek jika accordion harus terbuka di awal
+            const content = button.nextElementSibling;
+            if (button.classList.contains('open') && content) {
+                 content.classList.add('open');
+                 // Pastikan ikon juga sesuai
+                 const icon = button.querySelector('.chevron');
+                 if (icon) icon.classList.add('rotate-180');
+            }
+
+            button.addEventListener('click', () => {
+                const content = button.nextElementSibling;
+                if (!content) return;
+
+                const isOpen = content.classList.contains('open');
+                const icon = button.querySelector('.chevron');
+
+                // Tutup semua accordion lain (opsional)
+                accordionButtons.forEach(otherButton => {
+                     const otherContent = otherButton.nextElementSibling;
+                     const otherIcon = otherButton.querySelector('.chevron');
+                     if (otherContent !== content && otherContent && otherContent.classList.contains('open')) {
+                         otherContent.classList.remove('open');
+                         otherButton.classList.remove('open');
+                         if (otherIcon) otherIcon.classList.remove('rotate-180');
+                     }
+                 });
+
+                // Buka/tutup yang ini
+                content.classList.toggle('open');
+                button.classList.toggle('open');
+                if (icon) icon.classList.toggle('rotate-180');
+            });
+        });
+
+        // Inisialisasi ikon Lucide
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- Logika FAQ Accordion (Simple) ---
+        const accordionHeaders = document.querySelectorAll('.accordion-header');
+        
+        if (accordionHeaders.length > 0) {
+            accordionHeaders.forEach(header => {
+                header.addEventListener('click', () => {
+                    const content = header.nextElementSibling;
+                    const icon = header.querySelector('.accordion-icon');
+                    const isOpen = content.style.maxHeight; // Cek apakah style maxHeight sudah di-set
+
+                    // Tutup semua accordion lain
+                    accordionHeaders.forEach(h => {
+                        if (h !== header) {
+                            h.nextElementSibling.style.maxHeight = null;
+                            const otherIcon = h.querySelector('.accordion-icon');
+                            if (otherIcon) otherIcon.style.transform = 'rotate(0deg)';
+                            h.classList.remove('open'); // Hapus kelas 'open' jika ada
+                        }
+                    });
+                    
+                    // Buka/tutup yang diklik
+                    if (isOpen) {
+                        content.style.maxHeight = null; // Tutup
+                        if(icon) icon.style.transform = 'rotate(0deg)';
+                        header.classList.remove('open');
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + "px"; // Buka
+                        if(icon) icon.style.transform = 'rotate(180deg)';
+                        header.classList.add('open');
+                    }
+                });
+            });
+        }
+        
+        // ... (Skrip lain seperti Counter, Lottie, dll. biarkan di sini) ...
+    });
+</script>
+
     
 </body>
 </html>

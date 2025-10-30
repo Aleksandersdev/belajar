@@ -55,6 +55,67 @@ $meta_image = isset($page_image) ? htmlspecialchars($page_image) : $default_imag
         .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
         .prose a { color: #22d3ee; text-decoration: none; }
         .prose a:hover { text-decoration: underline; }
+
+        /* Style untuk Accordion (Sama seperti halaman lain) */
+    .accordion-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease-out, padding 0.4s ease-out;
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+        background-color: #f8fafc;
+        border-top: 1px solid #e2e8f0;
+    }
+    .accordion-content.open {
+        max-height: 1500px; /* Tinggi maksimal besar */
+        padding-top: 1rem;
+        padding-bottom: 1.5rem;
+    }
+    .accordion-button svg.chevron {
+        transition: transform 0.3s ease;
+    }
+    .accordion-button.open svg.chevron {
+        transform: rotate(180deg);
+    }
+    /* Styling tambahan untuk konten materi */
+    .materi-list {
+        list-style-type: disc; /* Pakai bullet */
+        list-style-position: outside;
+        margin-left: 1.25rem;
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+        line-height: 1.75;
+    }
+    .materi-list li::marker {
+        color: #a855f7; /* Warna bullet point (ungu) */
+    }
+    .highlight-sosiologi {
+        background-color: #f3e8ff; /* Latar ungu muda */
+        color: #581c87; /* Teks ungu tua */
+        padding: 0.1rem 0.4rem;
+        border-radius: 0.25rem;
+        font-weight: 600;
+    }
+     .definisi-box {
+        background-color: #f0f9ff;
+        border-left: 4px solid #0284c7;
+        padding: 1rem;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 0.25rem;
+        font-style: italic;
+    }
+    .penting-box {
+         background-color: #fffbeb;
+        border-left: 4px solid #f59e0b;
+        padding: 1rem;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 0.25rem;
+        color: #78350f;
+    }
+
+    
     </style>
 
     
