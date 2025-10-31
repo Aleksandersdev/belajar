@@ -2,12 +2,12 @@
 // Mendefinisikan konstanta keamanan
 define('APP_RUNNING', true);
 
-/ --- PENGATURAN DATABASE ---
+
 $db_host = 'localhost';     // Sesuaikan dengan host DB kamu
 $db_name = 'u596827699_study'; // Sesuaikan dengan nama DB kamu
 $db_user = 'u596827699_study';          // Sesuaikan dengan username DB kamu
 $db_pass = '9VJ5Zo|pnRt!';              // Sesuaikan dengan password DB kamu
-/--------------------------
+
 
 // // --- PENGATURAN DATABASE ---
 // $db_host = 'localhost';     // Sesuaikan dengan host DB kamu
