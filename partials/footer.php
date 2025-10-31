@@ -248,8 +248,40 @@ defined('APP_RUNNING') or die('Access denied');
             });
         }
         
-        // ... (Skrip lain seperti Counter, Lottie, dll. biarkan di sini) ...
+       // --- Logika Toggle Password (BARU) ---
+        const togglePasswordBtn = document.getElementById('toggle-password-btn');
+        const passwordInput = document.getElementById('password');
+        const togglePasswordIcon = document.getElementById('toggle-password-icon');
+
+        // Hanya jalankan jika elemen-elemen ini ada (di halaman login)
+        if (togglePasswordBtn && passwordInput && togglePasswordIcon) {
+            
+            togglePasswordBtn.addEventListener('click', () => {
+                // Cek tipe input saat ini
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+
+                // Ganti ikon berdasarkan tipe
+                if (type === 'password') {
+                    togglePasswordIcon.setAttribute('data-lucide', 'eye');
+                } else {
+                    togglePasswordIcon.setAttribute('data-lucide', 'eye-off');
+                }
+                
+                // Panggil ulang lucide.createIcons() untuk me-render ikon yang baru
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+            });
+        }
+        
+        // Pastikan lucide.createIcons() dipanggil setidaknya sekali saat load
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
     });
+    
+    
 </script>
 
     
