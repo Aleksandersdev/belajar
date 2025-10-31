@@ -11,6 +11,14 @@ defined('APP_RUNNING') or die('Access denied');
                 <p class="text-slate-500 text-sm">Platform terintegrasi untuk pengembangan kompetensi akademik dan profesional.</p>
             </div>
             <div>
+                <h3 class="font-semibold text-slate-900 mb-4">Dukungan</h3>
+                <ul class="space-y-3">
+                    <li><a href="#" class="text-slate-500 hover:text-indigo-600 transition-colors">Materi TKA</a></li>
+                    <li><a href="#" class="text-slate-500 hover:text-indigo-600 transition-colors">Bank Soal</a></li>
+                    <li><a href="#" class="text-slate-500 hover:text-indigo-600 transition-colors">Tryout Online</a></li>
+                </ul>
+            </div>
+            <div>
                 <h3 class="font-semibold text-slate-900 mb-4">Bantuan & Panduan</h3>
                 <ul class="space-y-3">
                     <li><a href="/tentang-kami" class="text-slate-500 hover:text-indigo-600 transition-colors">Tentang Kami</a></li>
@@ -19,20 +27,13 @@ defined('APP_RUNNING') or die('Access denied');
                     <li><a href="/disclaimer" class="text-slate-500 hover:text-indigo-600 transition-colors">Disclaimer</a></li>
                 </ul>
             </div>
-            <div>
-                <h3 class="font-semibold text-slate-900 mb-4">Dukungan</h3>
-                <ul class="space-y-3">
-                    <li><a href="https://domainanda.com/#faq" class="text-slate-500 hover:text-indigo-600 transition-colors">FAQ</a></li>
-                    <li><a href="https://domainanda.com/kontak" class="text-slate-500 hover:text-indigo-600 transition-colors">Kontak Kami</a></li>
-                    <li><a href="https://domainanda.com/kebijakan-privasi" class="text-slate-500 hover:text-indigo-600 transition-colors">Kebijakan Privasi</a></li>
-                </ul>
-            </div>
+            
             <div>
                 <h3 class="font-semibold text-slate-900 mb-4">Ikuti Kami</h3>
                 <div class="flex space-x-4">
-                    <a href="#" class="text-slate-400 hover:text-indigo-600 hover:scale-110 transition-all transform"><i data-lucide="facebook" class="w-6 h-6"></i></a>
-                    <a href="#" class="text-slate-400 hover:text-indigo-600 hover:scale-110 transition-all transform"><i data-lucide="twitter" class="w-6 h-6"></i></a>
-                    <a href="#" class="text-slate-400 hover:text-indigo-600 hover:scale-110 transition-all transform"><i data-lucide="instagram" class="w-6 h-6"></i></a>
+                    <a href="https://facebook.com/rangkumanmaterii" class="text-slate-400 hover:text-indigo-600 hover:scale-110 transition-all transform"><i data-lucide="facebook" class="w-6 h-6"></i></a>
+                    <a href="https://twitter.com/catatanmaterii" class="text-slate-400 hover:text-indigo-600 hover:scale-110 transition-all transform"><i data-lucide="twitter" class="w-6 h-6"></i></a>
+                    <a href="https://www.instagram.com/rangkumanmateri_/" class="text-slate-400 hover:text-indigo-600 hover:scale-110 transition-all transform"><i data-lucide="instagram" class="w-6 h-6"></i></a>
                     <a href="#" class="text-slate-400 hover:text-indigo-600 hover:scale-110 transition-all transform"><i data-lucide="linkedin" class="w-6 h-6"></i></a>
                 </div>
             </div>

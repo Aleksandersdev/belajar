@@ -49,3 +49,18 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.php -f
 RewriteRule ^(.*)$ $1.php [L]
+
+# ... (Aturan lama Anda) ...
+
+# ATURAN BARU UNTUK KELOLA SOAL
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^admin/kelola_soal/?$ admin/kelola_soal.php [L,QSA]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^admin/soal_edit/([0-9]+)/?$ admin/soal_edit.php?id=$1 [L,QSA]
+
+# --- (Aturan umum .php Anda tetap di bagian bawah) ---
+RewriteCond %{REQUEST_FILENAME} !-f
+# ...

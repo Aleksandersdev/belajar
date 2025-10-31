@@ -1,17 +1,24 @@
 <?php
 // Mencegah file ini diakses secara langsung dari browser
 defined('APP_RUNNING') or die('Access denied');
-// --- PENGATURAN META TAG DINAMIS ---
-// Nilai default (jika tidak di-set oleh halaman pemanggil)
-$default_description = "Rangkuman Materi Pelajaran Lengkap dan Latihan Soal untuk persiapan ujian Anda."; // Ganti dengan deskripsi default websitemu
-$default_keywords = "Kampus Impian, rangkuman materi, latihan soal, bimbel, try out, UTBK, masuk PTN"; // Ganti dengan kata kunci umum websitemu
-$site_name = "Kampus Impian"; // Nama websitemu
+// --- PERUBAHAN DI SINI ---
+$site_name = "Rangkumanmateri"; // Nama pendek untuk halaman lain (bukan judul utama)
+$default_title = "Rangkumanmateri - Platform Catatan & Latihan Online"; // Judul default BARU Anda
+// --- AKHIR PERUBAHAN ---
+
 $current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+$default_image_url = "/path/ke/gambar/default_social_media.jpg"; 
 
+// --- PERUBAHAN LOGIKA TITLE ---
+// Gunakan $default_title jika $page_title tidak ada atau jika $page_title adalah 'Beranda'
+$meta_title = (isset($page_title) && $page_title !== 'Beranda') 
+              ? htmlspecialchars($page_title) . ' | ' . $site_name 
+              : $default_title;
+// --- AKHIR PERUBAHAN ---
 
-// Gunakan nilai dari halaman pemanggil jika ada, jika tidak pakai default
-$meta_title = isset($page_title) ? htmlspecialchars($page_title) . ' | ' . $site_name : $site_name;
 $meta_description = isset($page_description) ? htmlspecialchars($page_description) : $default_description;
+$meta_keywords = isset($page_keywords) ? htmlspecialchars($page_keywords) : $default_keywords;
+$meta_image = isset($page_image) ? htmlspecialchars($page_image) : $default_image_url;
 $meta_keywords = isset($page_keywords) ? htmlspecialchars($page_keywords) : $default_keywords;
 $meta_image = isset($page_image) ? htmlspecialchars($page_image) : $default_image_url; // Gambar spesifik per halaman (opsional)
 ?>
@@ -21,7 +28,7 @@ $meta_image = isset($page_image) ? htmlspecialchars($page_image) : $default_imag
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-   <title><?php echo isset($page_title) ? $page_title : 'Beranda'; ?> | kampusimpian.com</title>
+   <title><?php echo $meta_title; ?></title>
    <meta name="description" content="<?php echo $meta_description; ?>">
     <meta name="keywords" content="<?php echo $meta_keywords; ?>">
     <meta name="robots" content="index, follow"> <meta name="author" content="@rangkumanmateri_"> <meta property="og:title" content="<?php echo $meta_title; ?>">

@@ -56,7 +56,7 @@ include 'partials/header.php';
                         Rangkuman <span class="text-blue-600"> Materi</span>
                     </h1>
                     <p class="text-lg md:text-xl text-gray-600 max-w-xl mx-auto md:mx-0 mb-10">
-                        Latihan UTBK SNBT mirip aslinya: CBT, penilaian IRT, materi dan pembahasan lengkap, ranking jurusan, dan rasionalisasi. Akses di mana saja.
+                        Cari Rangkuman Materi dan Latihan Soal Lengkap, untuk belajar persiapan Ujian Sekolah, TKA, dan UTBK.
                     </p>
                     <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
                         <a href="/materi" class="hero-cta-gradient text-white font-bold px-8 py-4 rounded-lg shadow-lg hover:scale-105 transform transition inline-flex items-center justify-center">
@@ -71,8 +71,8 @@ include 'partials/header.php';
                 </div>
                 
                 <div class="md:w-1/2 flex justify-center md:justify-end" data-aos="fade-left" data-aos-delay="200">
-                    <img src="https://sainsin.com/cdn-cgi/image/width=1920/_next/static/media/header-1-compress.161188a0.svg" 
-                         alt="Ilustrasi Belajar Online" 
+                    <img src="https://rangkumanmateri.com/uploads/rangkuman.png" 
+                         alt="Rangkumanmateri.com - Rangkuman Materi dan Latihan Soal Lengkap" 
                          class="w-full max-w-lg rounded-lg"> 
                          </div>
             </div>
