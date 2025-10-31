@@ -35,7 +35,7 @@ $meta_image = isset($page_image) ? htmlspecialchars($page_image) : $default_imag
     <meta property="og:description" content="<?php echo $meta_description; ?>">
     <meta property="og:type" content="website"> <meta property="og:url" content="<?php echo $current_url; ?>">
     <meta property="og:image" content="<?php echo $meta_image; ?>"> <meta property="og:site_name" content="<?php echo $site_name; ?>">
-    
+    <meta name="google-site-verification" content="vbH6pQeUamJFGybWjpJ9Gqn8FnEX-JPDtecJYGW9fb8" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
