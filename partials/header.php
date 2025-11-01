@@ -130,16 +130,16 @@ $meta_image = isset($page_image) ? htmlspecialchars($page_image) : $default_imag
 <body class="bg-slate-50"> 
 <header class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
     <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-        <a href="#" class="text-2xl font-bold text-blue-800">
+        <a href="/" class="text-2xl font-bold text-blue-800">
             Rangkuman Materi
         </a>
         <div class="hidden md:flex items-center space-x-8">
-            <a href="https://domainanda.com/#layanan" class="text-gray-600 hover:text-blue-700 font-medium">Layanan</a>
-            <a href="https://domainanda.com/tka" class="text-gray-600 hover:text-blue-700 font-medium">Latihan TKA</a>
-            <a href="https://domainanda.com/#keunggulan" class="text-gray-600 hover:text-blue-700 font-medium">Keunggulan</a>
-            <a href="https://domainanda.com/#blog" class="text-gray-600 hover:text-blue-700 font-medium">Blog</a>
-            <a href="https://domainanda.com/kontak" class="text-gray-600 hover:text-blue-700 font-medium">Kontak</a>
-            <?php 
+            <a href="/materi/tka" class="text-gray-600 hover:text-blue-700 font-medium">TKA</a>
+            <a href="#" class="text-gray-600 hover:text-blue-700 font-medium">UTBK</a>
+            <a href="#" class="text-gray-600 hover:text-blue-700 font-medium">Keunggulan</a>
+            <a href="#" class="text-gray-600 hover:text-blue-700 font-medium">Blog</a>
+            <a href="#" class="text-gray-600 hover:text-blue-700 font-medium">Kontak</a>
+            <?php
             // TAMBAHKAN BLOK PHP INI
             // Cek apakah admin sedang login (session ini dibuat di process_login.php)
             if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true): 
@@ -158,12 +158,12 @@ $meta_image = isset($page_image) ? htmlspecialchars($page_image) : $default_imag
         </button>
     </nav>
     <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
-        <a href="https://domainanda.com/#layanan" class="block py-2 text-gray-600 hover:text-blue-700">Layanan</a>
-        <a href="https://domainanda.com/latihan-tka" class="block py-2 text-gray-600 hover:text-blue-700">Latihan TKA</a>
-        <a href="https://domainanda.com/#keunggulan" class="block py-2 text-gray-600 hover:text-blue-700">Keunggulan</a>
-        <a href="https://domainanda.com/#blog" class="block py-2 text-gray-600 hover:text-blue-700">Blog</a>
-        <a href="https://domainanda.com/kontak" class="block py-2 text-gray-600 hover:text-blue-700">Kontak</a>
-        <a href="#/" target="_blank" class="block mt-4 cta-gradient text-white text-center font-semibold px-6 py-2 rounded-lg shadow-md">
+        <a href="/materi/tka" class="block py-2 text-gray-600 hover:text-blue-700">TKA</a>
+        <a href="#" class="block py-2 text-gray-600 hover:text-blue-700">UTBK</a>
+        <a href="#" class="block py-2 text-gray-600 hover:text-blue-700">Keunggulan</a>
+        <a href="#" class="block py-2 text-gray-600 hover:text-blue-700">Blog</a>
+        <a href="#" class="block py-2 text-gray-600 hover:text-blue-700">Kontak</a>
+        <a href="#" target="_blank" class="block mt-4 cta-gradient text-white text-center font-semibold px-6 py-2 rounded-lg shadow-md">
             Mulai Belajar
         </a>
     </div>

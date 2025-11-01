@@ -37,10 +37,10 @@ include 'partials/header.php';
     <section id="hero" class="pt-28 pb-16 md:pt-40 md:pb-24 flex items-center bg-slate-50">
         <div class="container mx-auto px-6 text-center">
             <h1 class="text-4xl md:text-6xl font-bold leading-tight text-slate-800 mb-4" data-aos="fade-up">
-                Bukan Sekadar Rangkuman Materi,
+                Belajar Seru Bareng,
             </h1>
             <h2 class="text-3xl md:text-5xl font-semibold text-blue-700 mb-8" data-aos="fade-up" data-aos-delay="100">
-                Kami Adalah Mitra Belajar Anda
+                @rangkumanmateri_
             </h2>
             <p class="max-w-3xl mx-auto text-lg text-slate-600 mb-12" data-aos="fade-up" data-aos-delay="200">
                 Di @rangkumanmateri_, kami hadir sebagai platform di mana pemahaman materi dan persiapan ujian tidak hanya diasah, tetapi juga dibuat mudah diakses.

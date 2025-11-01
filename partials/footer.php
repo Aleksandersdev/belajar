@@ -11,11 +11,10 @@ defined('APP_RUNNING') or die('Access denied');
                 <p class="text-slate-500 text-sm">Platform terintegrasi untuk pengembangan kompetensi akademik dan profesional.</p>
             </div>
             <div>
-                <h3 class="font-semibold text-slate-900 mb-4">Dukungan</h3>
+                <h3 class="font-semibold text-slate-900 mb-4">Fitur Unggulan</h3>
                 <ul class="space-y-3">
-                    <li><a href="#" class="text-slate-500 hover:text-indigo-600 transition-colors">Materi TKA</a></li>
-                    <li><a href="#" class="text-slate-500 hover:text-indigo-600 transition-colors">Bank Soal</a></li>
-                    <li><a href="#" class="text-slate-500 hover:text-indigo-600 transition-colors">Tryout Online</a></li>
+                    <li><a href="/materi/tka" class="text-slate-500 hover:text-indigo-600 transition-colors">Materi TKA</a></li>
+                    <li><a href="#" class="text-slate-500 hover:text-indigo-600 transition-colors">Materi UTBK</a></li>
                 </ul>
             </div>
             <div>
