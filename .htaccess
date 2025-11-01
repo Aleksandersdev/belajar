@@ -64,3 +64,7 @@ RewriteRule ^admin/soal_edit/([0-9]+)/?$ admin/soal_edit.php?id=$1 [L,QSA]
 # --- (Aturan umum .php Anda tetap di bagian bawah) ---
 RewriteCond %{REQUEST_FILENAME} !-f
 # ...
+
+# --- MENGALIHKAN AKSES LANGSUNG KE FOLDER 'materi' ---
+# Jika seseorang mencoba mengakses /materi/ atau /materi, alihkan ke homepage
+RewriteRule ^materi/?$ / [R=301,L]

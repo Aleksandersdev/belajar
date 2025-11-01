@@ -2,7 +2,7 @@
 // Mencegah file ini diakses secara langsung dari browser
 defined('APP_RUNNING') or die('Access denied');
 // --- PERUBAHAN DI SINI ---
-$site_name = "Rangkumanmateri"; // Nama pendek untuk halaman lain (bukan judul utama)
+$site_name = "Rangkumanmateri.com"; // Nama pendek untuk halaman lain (bukan judul utama)
 $default_title = "Rangkumanmateri - Platform Catatan & Latihan Online"; // Judul default BARU Anda
 // --- AKHIR PERUBAHAN ---
 
@@ -122,6 +122,48 @@ $meta_image = isset($page_image) ? htmlspecialchars($page_image) : $default_imag
         color: #78350f;
     }
 
+    /* --- CSS UNTUK TKA INFO MODAL --- */
+.tka-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(9, 30, 66, 0.5); /* Latar gelap transparan */
+    z-index: 9998;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none; /* Sembunyi by default */
+}
+
+.tka-modal-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.95); /* Mulai dari kecil */
+    background-color: white;
+    border-radius: 1rem; /* rounded-2xl */
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    z-index: 9999;
+    width: 90%;
+    max-width: 500px; /* Lebar maks 500px */
+    opacity: 0;
+    transition: all 0.2s ease-out;
+    pointer-events: none; /* Sembunyi by default */
+}
+
+/* State saat modal aktif */
+.tka-modal-backdrop.open,
+.tka-modal-container.open {
+    opacity: 1;
+    pointer-events: auto; /* Bisa diklik */
+}
+
+.tka-modal-container.open {
+    transform: translate(-50%, -50%) scale(1); /* Jadi ukuran normal */
+}
+/* --- AKHIR CSS MODAL --- */
+
     
     </style>
 
@@ -134,7 +176,7 @@ $meta_image = isset($page_image) ? htmlspecialchars($page_image) : $default_imag
             Rangkuman Materi
         </a>
         <div class="hidden md:flex items-center space-x-8">
-            <a href="/materi/tka" class="text-gray-600 hover:text-blue-700 font-medium">TKA</a>
+            <a href="/tka" class="text-gray-600 hover:text-blue-700 font-medium">TKA</a>
             <a href="#" class="text-gray-600 hover:text-blue-700 font-medium">UTBK</a>
             <a href="#" class="text-gray-600 hover:text-blue-700 font-medium">Keunggulan</a>
             <a href="#" class="text-gray-600 hover:text-blue-700 font-medium">Blog</a>
@@ -158,7 +200,7 @@ $meta_image = isset($page_image) ? htmlspecialchars($page_image) : $default_imag
         </button>
     </nav>
     <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
-        <a href="/materi/tka" class="block py-2 text-gray-600 hover:text-blue-700">TKA</a>
+        <a href="/tka" class="block py-2 text-gray-600 hover:text-blue-700">TKA</a>
         <a href="#" class="block py-2 text-gray-600 hover:text-blue-700">UTBK</a>
         <a href="#" class="block py-2 text-gray-600 hover:text-blue-700">Keunggulan</a>
         <a href="#" class="block py-2 text-gray-600 hover:text-blue-700">Blog</a>

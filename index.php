@@ -63,7 +63,7 @@ include 'partials/header.php';
                             <i data-lucide="play" class="w-5 h-5 mr-2"></i>
                             Mulai Belajar
                         </a>
-                        <a href="/login" class="hero-btn-outline font-bold px-8 py-4 rounded-lg shadow-sm hover:scale-105 transform transition inline-flex items-center justify-center">
+                        <a href="/" class="hero-btn-outline font-bold px-8 py-4 rounded-lg shadow-sm hover:scale-105 transform transition inline-flex items-center justify-center">
                             <i data-lucide="arrow-right" class="w-5 h-5 mr-2"></i>
                             Sudah Punya Akun
                         </a>

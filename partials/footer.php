@@ -33,7 +33,7 @@ defined('APP_RUNNING') or die('Access denied');
                     <a href="https://facebook.com/rangkumanmaterii" class="text-slate-400 hover:text-indigo-600 hover:scale-110 transition-all transform"><i data-lucide="facebook" class="w-6 h-6"></i></a>
                     <a href="https://twitter.com/catatanmaterii" class="text-slate-400 hover:text-indigo-600 hover:scale-110 transition-all transform"><i data-lucide="twitter" class="w-6 h-6"></i></a>
                     <a href="https://www.instagram.com/rangkumanmateri_/" class="text-slate-400 hover:text-indigo-600 hover:scale-110 transition-all transform"><i data-lucide="instagram" class="w-6 h-6"></i></a>
-                    <a href="#" class="text-slate-400 hover:text-indigo-600 hover:scale-110 transition-all transform"><i data-lucide="linkedin" class="w-6 h-6"></i></a>
+
                 </div>
             </div>
         </div>
@@ -282,7 +282,88 @@ defined('APP_RUNNING') or die('Access denied');
     
     
 </script>
+<?php
+// Cek apakah variabel ini di-set di halaman (spt tka-sd.php)
+if (isset($show_tka_modal) && $show_tka_modal):
+?>
 
+<div id="tka-modal-backdrop" class="tka-modal-backdrop"></div>
+
+<div id="tka-modal-container" class="tka-modal-container">
+    <div class="p-6 relative">
+        <button id="close-modal-btn" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition">
+            <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+        
+        <div class="flex items-center space-x-3 mb-4">
+            <i data-lucide="info" class="w-7 h-7 text-blue-500 flex-shrink-0"></i>
+            <h2 class="text-xl font-bold text-slate-800">Informasi Penting</h2>
+        </div>
+        
+        <p class="text-slate-600 mb-4">
+            Latihan soal ini telah disesuaikan dengan kerangka asesmen berdasarkan:
+        </p>
+        
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+    <p class="font-semibold text-blue-800">
+        Peraturan Kepala Badan Standar, Kurikulum, dan Asesmen Pendidikan
+        Kementerian Pendidikan Dasar dan Menengah Republik Indonesia
+    </p>
+    <p class="text-lg font-bold text-blue-700 my-1">
+        <?php echo htmlspecialchars($modal_nomor_sk ?? 'Nomor SK Tidak Ditemukan'); ?>
+    </p>
+    <p class="text-sm text-blue-700">
+        <?php echo htmlspecialchars($modal_tentang_sk ?? 'Tentang SK Tidak Ditemukan'); ?>
+    </p>
+    <p class="text-xs text-slate-500 mt-2">
+        <?php echo htmlspecialchars($modal_tanggal_sk ?? 'Tanggal Tidak Ditemukan'); ?>
+    </p>
+</div>
+        
+        <button id="start-learn-btn" class="w-full bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-blue-700 transition duration-200">
+            Mulai Belajar
+        </button>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Cek apakah elemen modal ada di halaman ini
+    const backdrop = document.getElementById('tka-modal-backdrop');
+    const modal = document.getElementById('tka-modal-container');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+    const startLearnBtn = document.getElementById('start-learn-btn');
+
+    // Hanya jalankan jika modalnya ada
+    if (backdrop && modal && closeModalBtn && startLearnBtn) {
+        
+        const openModal = () => {
+            backdrop.classList.add('open');
+            modal.classList.add('open');
+            // Render ulang ikon Lucide di dalam modal
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        };
+
+        const closeModal = () => {
+            backdrop.classList.remove('open');
+            modal.classList.remove('open');
+        };
+
+        // Tampilkan modal secara otomatis saat halaman dimuat
+        // (Kita bisa tambahkan delay kecil agar animasi transisi terlihat)
+        setTimeout(openModal, 100);
+
+        // Event listener untuk tombol tutup
+        closeModalBtn.addEventListener('click', closeModal);
+        startLearnBtn.addEventListener('click', closeModal);
+        backdrop.addEventListener('click', closeModal);
+    }
+});
+</script>
+
+<?php endif; // Akhir dari if ($show_tka_modal) ?>
     
 </body>
 </html>
