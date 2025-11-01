@@ -178,14 +178,14 @@ include 'partials/header.php';
                     </div>
                 </a>
 
-                <a href="/materi" class="group block bg-white rounded-2xl p-6 shadow-lg border border-slate-200 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-amber-500/20" data-aos="fade-up" data-aos-delay="150">
+                <a href="/tka" class="group block bg-white rounded-2xl p-6 shadow-lg border border-slate-200 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-amber-500/20" data-aos="fade-up" data-aos-delay="150">
                     <div class="flex items-start space-x-4">
                         <div class="flex-shrink-0 bg-amber-100 p-3 rounded-xl transform transition-transform duration-300 group-hover:scale-110">
                             <i data-lucide="book-copy" class="w-7 h-7 text-amber-600"></i>
                         </div>
                         <div>
-                            <h3 class="text-lg font-bold text-slate-800 mb-1">Materi Pelajaran</h3>
-                            <p class="text-sm text-slate-500">Ringkasan Materi Mudah Dimengerti.</p>
+                            <h3 class="text-lg font-bold text-slate-800 mb-1">Materi TKA</h3>
+                            <p class="text-sm text-slate-500">Latihan Soal TKA Lengkap & Pembahasannya</p>
                         </div>
                     </div>
                 </a>

@@ -43,6 +43,9 @@ $meta_image = isset($page_image) ? htmlspecialchars($page_image) : $default_imag
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7258890957316842"
+     crossorigin="anonymous"></script>
+
     <style>
         body {
             font-family: 'Inter', sans-serif;
